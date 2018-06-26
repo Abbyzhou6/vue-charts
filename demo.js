@@ -1,3 +1,4 @@
+ 
 var option = {
   title: {
       text: '动态数据',
@@ -17,18 +18,16 @@ var option = {
   xAxis: [
       {
           type: 'category',
-          boundaryGap: true,
+          boundaryGap: false,
           data: (function (){
-            var now = new Date();
-            var res = [];
-            var len = 10;
+            var res = []
+            var len = 10
             while (len--) {
                 var now = moment().format('hh:mm:ss')
-                res.unshift(now);
-                now = new Date(now - 2000);
-                  
+                res.unshift(now)
+                now = new Date(now - 2000)
             }
-            return res;
+            return res
         })()
       }
   ],
@@ -37,27 +36,29 @@ var option = {
           type: 'value',
           scale: true,
           name: '价格',
-          max: 30,
+          max: 20,
           min: 0,
-          boundaryGap: [0.2, 0.2]
+          boundaryGap: [0, '100%']
       }
   ],
   series: [
       {
           name:'最新成交价',
           type:'line',
+          areaStyle: {},
           data:(function (){
-            var res = [];
-            var len = 0;
+            var res = []
+            var len = 0
             while (len < 10) {
-                res.push((Math.random()*10 + 5).toFixed(1) - 0);
-                len++;
+                res.push((Math.random()*10 + 5).toFixed(1) - 0)
+                len++
             }
-            return res;
+            return res
         })()
       }
   ]
 }
+var myChart = {}
 
 new Vue({
   el: '#app',
@@ -69,6 +70,7 @@ new Vue({
   mounted: function () {
     this.initEchart()
     this.setEchartsInterval()
+    this.enterLeaveChange()
   },
   methods: {
     initEchart: function () {
@@ -78,7 +80,6 @@ new Vue({
       this.timeId = setInterval(this.reloadData, this.timer)
     },
     reloadData:function () {
-
       var now = moment().format('hh:mm:ss')
       var data0 = option.series[0].data
 
@@ -89,18 +90,16 @@ new Vue({
       option.xAxis[0].data.push(now)
 
       myChart.setOption(option)
-
     },
-    startSetInterval:function () {
-      var btn = document.getElementById('btn')
-
-        if(btn.innerHTML  === '暂停'){
-          clearInterval(this.timeId)
-          btn.innerHTML = '开始'
-        }else if(btn.innerHTML  ===  '开始'){
-          this.setEchartsInterval()
-          btn.innerHTML = '暂停'
-        }
-    }
+     enterLeaveChange:function () {
+       var app = document.getElementById('main')
+       var that = this
+       app.onmouseenter = function () {
+        clearInterval(that.timeId)
+       }
+       app.onmouseleave = function () {
+        that.setEchartsInterval()
+       }
+     }
   }
 })
